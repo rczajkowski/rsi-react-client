@@ -5,7 +5,7 @@ export default class EditReservation extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { value: null, seats: [1], name: '' };
+		this.state = { value: null, seats: [1], name: '', errorMessage: ''};
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -18,9 +18,9 @@ export default class EditReservation extends React.Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
 		console.log('sss', this.state.seats);
-		axios.put(`http://localhost:8080/films/reservation/${this.props.location.state.reservation.id}`, { seats: this.state.seats }).then(response => {
-			this.setState({ successMsg: response.data });
-		}).catch((error) => { console.log('error', error)});
+		axios.put(`http://localhost:8080/reservations/${this.props.location.state.reservation.id}`, { seats: this.state.seats }).then(response => {
+			this.props.history.goBack();
+		}).catch((error) => { this.setState({ errorMessage: error.response.data.message })});
 
 	};
 
@@ -81,7 +81,7 @@ export default class EditReservation extends React.Component {
 						<input type="submit" value="Aktualizuj" />
 					</div>
 				</form>
-				{this.state.successMsg}
+				{this.state.errorMessage}
 			</div>
 		)
 	}

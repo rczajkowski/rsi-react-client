@@ -6,7 +6,7 @@ export default class Reservation extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { value: props.location.state.film.schedule[0], seats: [1], name: '' };
+		this.state = { value: props.location.state.film.schedule[0], seats: [1], name: '', errorMessage: '' };
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -19,9 +19,11 @@ export default class Reservation extends React.Component {
 	handleSubmit = (e) => {
 		console.log('ttttt', this.state.value)
 		e.preventDefault();
-		axios.post(`http://localhost:8080/films/${this.props.location.state.film.id}/reservation`, { date: this.state.value, seats: this.state.seats }).then(response => {
-			this.setState({ successMsg: response.data });
-		}).catch((error) => { console.log('error', error)});
+		axios.post(`http://localhost:8080/reservations`, { filmId: this.props.location.state.film.id, date: this.state.value, seats: this.state.seats }).then(response => {
+			this.props.history.push("/reservations")
+		}).catch((error) => {
+			this.setState({ errorMessage: error.response.data.message })
+		});
 
 	};
 
@@ -91,7 +93,7 @@ export default class Reservation extends React.Component {
 						<input type="submit" value="Zarezerwuj" />
 					</div>
 				</form>
-				{this.state.successMsg}
+				{this.state.errorMessage}
 			</div>
 		 )
 	}

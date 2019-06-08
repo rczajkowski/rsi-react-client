@@ -12,14 +12,15 @@ export default class Films extends React.Component {
 
 	componentDidMount(){
 		axios.get("http://localhost:8080/films").then(response => {
-			this.setState({ films: response.data });
+			console.log('data',response);
+			this.setState({ films: response.data._embedded.filmResourceList });
 		}).catch((error) => { console.log('error', error)});
 	}
 
 	render(){
 		return(
 			<ul>
-				{this.state.films.map(f => (<Film key={f.id} film={f} />))}
+				{this.state.films.map(resource => resource.film).map(f => (<Film key={f.id} film={f} />))}
 			</ul>
 		)
 	}

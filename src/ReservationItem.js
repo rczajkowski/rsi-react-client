@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 import axios from 'axios/index';
 import { getFormattedDate } from './App';
 
-const ReservationItem = ({ reservation }) => {
+const ReservationItem = ({ reservation, links }) => {
 	const [textInfo, setInfo] = useState('');
 	return (<li>
-		<a href={`http://localhost:8080/films/pdf/${reservation.id}`} target="_blank">
+		<a href={links.downloadPdf.href} target="_blank">
 			{`${getFormattedDate(reservation.date)} - ${reservation.film.name} - ${reservation.film.director} - ${reservation.seatsNo.toString()}`}
 		</a>
 		<Link to={{
@@ -18,9 +18,10 @@ const ReservationItem = ({ reservation }) => {
 			edytuj
 		</Link>
 		<button onClick={() => {
-			axios.delete(`http://localhost:8080/films/resignation?tokenResignation=${reservation.resignationToken}`).then(response => {
-				setInfo(response.data);
-			}).catch((error) => { setInfo(error.message)})
+			axios.delete(links.resignation.href).then(response => {
+				const resignation = response.data;
+				setInfo(`Zrezygnowałeś z rezerwacji miejsc ${resignation.seatsNo.toString()} na film ${resignation.film.name} o godzinie ${resignation.date}`);
+			}).catch((error) => { setInfo(error.response.data.message)})
 		}}>
 			zrezeygnuj z rezerwacji
 		</button>

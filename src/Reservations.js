@@ -10,15 +10,20 @@ export default class Reservations extends React.Component {
 	}
 
 	componentDidMount(){
-		axios.get("http://localhost:8080/films/reservation/user").then(response => {
-			this.setState({ reservations: response.data });
+		axios.get("http://localhost:8080/reservations").then(response => {
+			console.log('ressss', response.data._embedded.reservationResourceList);
+			this.setState({ reservations: response.data._embedded.reservationResourceList });
 		}).catch((error) => { console.log('error', error)});
 	}
 
 	render(){
 		return(
 			<ul>
-				{this.state.reservations.map(r => (<ReservationItem key={r.id} reservation={r} />))}
+				{this.state.reservations.map(resource => {
+					const links = resource._links;
+					const data = resource.reservation;
+					return (<ReservationItem key={data.id} reservation={data} links={links} />)
+				})}
 			</ul>
 		)
 	}
